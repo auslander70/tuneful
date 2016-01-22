@@ -28,6 +28,35 @@ class TestAPI(unittest.TestCase):
         # Create folder for test uploads
         os.mkdir(upload_path())
 
+    def test_get_empty_songlist(self):
+        response = self.client.get("/api/songs",
+            headers=[("Accept", "application/json")]
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.mimetype, "application/json")
+        data = json.loads(response.data.decode("ascii"))
+        self.assertEqual(data, [])
+
+    def test_post_song(self):
+        file = models.File(filename="Soulful Strut.mp3")
+        session.add(file)
+        session.commit()
+        print(file.id)
+        data = {
+            "file": {
+                "id": file.id
+            }
+        }
+        
+        response = self.client.post("/api/songs",
+            data=json.dumps(data),
+            content_type="application/json",
+            headers=[("Accept", "application/json")])
+        
+        self.assertEqual(response.status_code, 301)
+        self.assertEqual(response.mimetype, "application/json")
+        
+        
     def tearDown(self):
         """ Test teardown """
         session.close()

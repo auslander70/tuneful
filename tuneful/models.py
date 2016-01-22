@@ -6,7 +6,7 @@ from sqlalchemy.orm import relationship
 
 from tuneful import app
 from .database import Base, engine
-"""
+
 class Song(Base):
   __tablename__ = "songs"
   
@@ -21,8 +21,7 @@ class Song(Base):
         "name": self.file.filename
       }
     }
-    
-  return song
+    return song
 
 
 class File(Base):
@@ -30,7 +29,14 @@ class File(Base):
   
   id = Column(Integer, primary_key=True)
   filename = Column(String(512))
+  song_id = Column(Integer, ForeignKey('songs.id'))
   
-  song_id = Column(Integer, ForeignKey('songs.id'), nullable=False)
+  def as_dictionary(self):
+    file = {
+      "id": id,
+      "name": filename
+    }
+    return file
+    
   
-"""
+Base.metadata.create_all(engine)
