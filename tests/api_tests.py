@@ -54,7 +54,44 @@ class TestAPI(unittest.TestCase):
         
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.mimetype, "text/html")
-    
+
+    def test_post_update_song_successful(self):
+        fileobj1 = models.File(filename="Soulful Strut.mp3")
+        fileobj2 = models.File(filename="Baker Street.mp3")
+        song = models.Song()
+        fileobj1.song_id = song.id
+        session.add_all([fileobj1, fileobj2, song])
+        session.commit()
+        data = {
+            "file": {
+                "id": fileobj2.id
+            }
+        }
+        
+        response = self.client.put("/api/songs/{}".format(song.id),
+            data=json.dumps(data),
+            content_type="application/json",
+            headers=[("Accept", "application/json")])
+        
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.mimetype, "application/json")
+
+    def test_post_update_song_failure(self):
+       
+        data = {
+            "file": {
+                "id": -1
+            }
+        }
+        
+        response = self.client.put("/api/songs/-1",
+            data=json.dumps(data),
+            content_type="application/json",
+            headers=[("Accept", "application/json")])
+        
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.mimetype, "text/html")
+        
     def test_post_song_fail(self):
         file_id = -1
         data = {
