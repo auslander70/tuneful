@@ -26,15 +26,16 @@ def songs_get():
 def songs_post():
   data = request.json
   file_id = data["file"]["id"]
-  file = session.query(models.File).get(file_id)
-  if file:
+  file_obj = session.query(models.File).get(file_id)
+  if not file_obj:
     message = "Could not find file with id {}".format(file_id)
     data = json.dumps({"message": message})
-    return Response(data, 301, mimetype="application/json")
+    return Response(data, 404, mimetype="application/json")
   else:     
-    song = models.Song(file=file_id)
-    session.add(song)
+    song = models.Song()
+    file_obj.song_id = song.id
+    session.add_all([song, file_obj])
     session.commit()
-    return redirect(url_for(songs_get))
+    return redirect(url_for("songs_get"))
 
     

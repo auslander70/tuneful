@@ -37,11 +37,10 @@ class TestAPI(unittest.TestCase):
         data = json.loads(response.data.decode("ascii"))
         self.assertEqual(data, [])
 
-    def test_post_song(self):
+    def test_post_song_successful(self):
         file = models.File(filename="Soulful Strut.mp3")
         session.add(file)
         session.commit()
-        print(file.id)
         data = {
             "file": {
                 "id": file.id
@@ -53,10 +52,27 @@ class TestAPI(unittest.TestCase):
             content_type="application/json",
             headers=[("Accept", "application/json")])
         
-        self.assertEqual(response.status_code, 301)
-        self.assertEqual(response.mimetype, "application/json")
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.mimetype, "text/html")
+    
+    """    
+    def test_post_song_fail(self):
+        file_id = -1
+        data = {
+            "file": {
+                "id": file_id
+            }
+        }
         
+        response = self.client.post("/api/songs",
+            data=json.dumps(data),
+            content_type="application/json",
+            headers=[("Accept", "application/json")])
         
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.mimetype, "application/json")  
+    """
+    
     def tearDown(self):
         """ Test teardown """
         session.close()
