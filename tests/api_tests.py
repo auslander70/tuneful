@@ -55,7 +55,6 @@ class TestAPI(unittest.TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.mimetype, "text/html")
     
-    """    
     def test_post_song_fail(self):
         file_id = -1
         data = {
@@ -71,7 +70,6 @@ class TestAPI(unittest.TestCase):
         
         self.assertEqual(response.status_code, 404)
         self.assertEqual(response.mimetype, "application/json")  
-    """
     
     def tearDown(self):
         """ Test teardown """
