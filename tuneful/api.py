@@ -59,3 +59,18 @@ def song_update(song_id):
         headers = {"Location": url_for("songs_get")}
         return Response(data, 201, headers=headers,
                     mimetype="application/json")   
+                    
+@app.route("/api/songs", methods=["DELETE"])
+@decorators.accept("application/json")
+def delete_song():
+  data = request.json
+  song_id = data["id"]
+  song = session.query(models.Song).get(song_id)
+  if not song:
+    message = "Could not find song with id {}".format(song_id)
+    data = json.dumps({"message": message})
+    return Response(data, 404, mimetype="application/json")
+  else:     
+    session.delete(song)
+    session.commit()
+    return redirect(url_for("songs_get"))

@@ -106,8 +106,25 @@ class TestAPI(unittest.TestCase):
             headers=[("Accept", "application/json")])
         
         self.assertEqual(response.status_code, 404)
-        self.assertEqual(response.mimetype, "application/json")  
-    
+        self.assertEqual(response.mimetype, "application/json")
+        
+    def test_delete_success(self):
+        """ Test successful song deletion """
+        song = models.Song()
+        session.add(song)
+        session.commit()
+        
+        data = {
+            "id": song.id
+        }
+        
+        response = self.client.delete("/api/songs",
+            data=json.dumps(data),
+            content_type="application/json",
+            headers=[("Accept", "application/json")])
+        
+        self.assertEqual(response.status_code, 302)
+
     def tearDown(self):
         """ Test teardown """
         session.close()
