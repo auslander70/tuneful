@@ -4,7 +4,7 @@ import shutil
 import json
 try: from urllib.parse import urlparse
 except ImportError: from urlparse import urlparse # Py2 compatibility
-from io import StringIO
+from io import BytesIO, StringIO
 
 import sys; print(list(sys.modules.keys()))
 # Configure our app to use the testing databse
@@ -139,7 +139,7 @@ class TestAPI(unittest.TestCase):
     
     def test_file_upload(self):
         data = {
-            "file": (StringIO("File contents"), "test.txt")
+            "file": (BytesIO(b"File contents"), "test.txt")
         }
 
         response = self.client.post("/api/files",

@@ -79,7 +79,6 @@ def delete_song():
 def uploaded_file(filename):
     return send_from_directory(upload_path(), filename)
 
-"""
 @app.route("/api/files", methods=["POST"])
 @decorators.require("multipart/form-data")
 @decorators.accept("application/json")
@@ -98,4 +97,3 @@ def file_post():
     data = db_file.as_dictionary()
     return Response(json.dumps(data), 201, mimetype="application/json")
     
-"""
